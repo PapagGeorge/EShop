@@ -109,8 +109,17 @@ Shared → all Domain projects
 - [x] Batch endpoint matches CatalogServiceClient contract (List<Guid> → List<Product>)
 - [x] All 74 tests still passing
 
-### Phase 8: API Gateway (YARP) — TODO
-- [ ] Route config, rate limiting, CORS, health checks
+### Phase 8: API Gateway (YARP) — DONE
+- [x] NuGet: Yarp.ReverseProxy 2.2.0, JwtBearer, Serilog.AspNetCore, Serilog.Sinks.Seq, Swashbuckle 6.9.0
+- [x] YARP routes: /api/auth → Identity(:5213), /api/orders → Ordering(:5281), /api/products → Catalog(:5056)
+- [x] JWT Authentication (validates tokens, same config as services)
+- [x] Rate Limiting: fixed window (100 req/min), returns 429
+- [x] CORS: AllowAll policy for development
+- [x] Health checks: /health endpoint
+- [x] Serilog + Seq logging
+- [x] Gateway port: 5000 (per architecture docs)
+- [x] Fixed Ordering appsettings Catalog URL: 5002 → 5056
+- [x] All 74 tests still passing
 
 ### Phase 9: Docker Full Stack & Release — TODO
 - [ ] Dockerfiles, E2E testing, release/hotfix git practice
