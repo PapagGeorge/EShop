@@ -70,9 +70,6 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-## Docker
-docker-compose.override.yml
-
 ## User-specific
 *.env
 appsettings.Development.json

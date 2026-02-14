@@ -1,0 +1,19 @@
+## Development overrides
+## Usage: docker-compose -f docker-compose.yml -f docker-compose.override.yml up
+services:
+
+  sqlserver:
+    environment:
+      - MSSQL_PID=Developer
+
+  rabbitmq:
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  seq:
+    volumes:
+      - seq-data:/data
+
+volumes:
+  rabbitmq-data:
+  seq-data:
