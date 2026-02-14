@@ -79,9 +79,17 @@ Shared → all Domain projects
 - [x] Queries: GetOrderById (query+handler), GetUserOrders (query+handler+validator)
 - [x] Tests: 26 application tests (handlers, validators) — ALL PASSING (52 total)
 
-### Phase 5: Ordering Infrastructure — TODO
-- [ ] OrderingDbContext, EF configs, migrations
-- [ ] OrderRepository, CatalogServiceClient (Polly), MassTransit EventBus
+### Phase 5: Ordering Infrastructure — DONE
+- [x] OrderingDbContext with Orders + OrderItems DbSets
+- [x] OrderConfiguration (owned Address, string status, backing field for Items)
+- [x] OrderItemConfiguration (decimal precision, ignored computed TotalPrice)
+- [x] OrderRepository (CRUD + paginated user orders with status filter)
+- [x] CatalogServiceClient (HttpClient + Polly retry/circuit breaker at DI level)
+- [x] EventBus (MassTransit IPublishEndpoint wrapper)
+- [x] API minimal setup (DbContext, DI registrations, connection strings)
+- [x] EF Migration: InitialOrderingMigration (Orders + OrderItems tables)
+- [x] NuGet: EF Core SqlServer, MassTransit.RabbitMQ, Http.Polly
+- [x] All 52 ordering + 22 identity tests passing (74 total)
 
 ### Phase 6: Ordering API — TODO
 - [ ] OrdersController, middleware, config, integration tests
