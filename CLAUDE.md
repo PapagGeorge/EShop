@@ -99,8 +99,15 @@ Shared → all Domain projects
 - [x] appsettings.json: Jwt section (shared token validation), Serilog config (Console + Seq)
 - [x] All 74 tests passing (52 ordering + 22 identity)
 
-### Phase 7: Catalog Service (Minimal) — TODO
-- [ ] In-memory products, 3 endpoints
+### Phase 7: Catalog Service (Minimal) — DONE
+- [x] NuGet: Serilog.AspNetCore 8.0.3, Serilog.Sinks.Seq 8.0.0, Swashbuckle 6.9.0
+- [x] Product model (Id, Name, Price, Category)
+- [x] ProductsController: GET all, GET by id, POST batch (no auth — internal service)
+- [x] 5 hardcoded products (Wireless Mouse, USB-C Cable, Mechanical Keyboard, HDMI Cable, Webcam)
+- [x] Program.cs: Serilog, Controllers, Swagger, Health checks
+- [x] appsettings.json: Serilog config (Console + Seq)
+- [x] Batch endpoint matches CatalogServiceClient contract (List<Guid> → List<Product>)
+- [x] All 74 tests still passing
 
 ### Phase 8: API Gateway (YARP) — TODO
 - [ ] Route config, rate limiting, CORS, health checks
