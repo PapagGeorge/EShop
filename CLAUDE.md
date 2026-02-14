@@ -71,11 +71,13 @@ Shared → all Domain projects
 - [x] Unit Tests: 26 tests (creation, invariants, state transitions, value equality) — ALL PASSING
 - [x] Merged to develop
 
-### Phase 4: Ordering Application — TODO
-- [ ] CQRS Commands & Queries with handlers
-- [ ] FluentValidation, MediatR Pipeline Behaviors
-- [ ] Interfaces (IOrderRepository, ICatalogService, IEventBus)
-- [ ] DTOs & AutoMapper
+### Phase 4: Ordering Application — DONE
+- [x] DTOs: AddressDto, OrderItemDto, OrderDto, OrderSummaryDto, PaginatedResult<T>
+- [x] Interfaces: IOrderRepository, ICatalogService (+ ProductDto), IEventBus
+- [x] Behaviors: ValidationBehavior, LoggingBehavior (MediatR pipeline)
+- [x] Commands: CreateOrder (command+handler+validator), CancelOrder (command+handler)
+- [x] Queries: GetOrderById (query+handler), GetUserOrders (query+handler+validator)
+- [x] Tests: 26 application tests (handlers, validators) — ALL PASSING (52 total)
 
 ### Phase 5: Ordering Infrastructure — TODO
 - [ ] OrderingDbContext, EF configs, migrations
