@@ -91,8 +91,13 @@ Shared → all Domain projects
 - [x] NuGet: EF Core SqlServer, MassTransit.RabbitMQ, Http.Polly
 - [x] All 52 ordering + 22 identity tests passing (74 total)
 
-### Phase 6: Ordering API — TODO
-- [ ] OrdersController, middleware, config, integration tests
+### Phase 6: Ordering API — DONE
+- [x] NuGet: JwtBearer, HealthChecks.EF, Serilog.AspNetCore, Serilog.Sinks.Seq, Swashbuckle 6.9.0
+- [x] ExceptionHandlingMiddleware (409 InvalidStatusTransition, 400 Validation, 422 BusinessRule, 404 NotFound, 500 fallback)
+- [x] OrdersController (POST create, GET by id, PATCH cancel, GET user orders) with [Authorize]
+- [x] Program.cs: Serilog, Controllers, Swagger+JWT, Auth, MediatR, FluentValidation, Behaviors, HealthChecks
+- [x] appsettings.json: Jwt section (shared token validation), Serilog config (Console + Seq)
+- [x] All 74 tests passing (52 ordering + 22 identity)
 
 ### Phase 7: Catalog Service (Minimal) — TODO
 - [ ] In-memory products, 3 endpoints
