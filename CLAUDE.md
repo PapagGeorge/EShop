@@ -134,8 +134,10 @@ Shared → all Domain projects
 - [x] Release v1.0: release/v1.0 → main (tag v1.0) → develop
 - [x] Hotfix v1.0.1: hotfix branch → main (tag v1.0.1) → develop
 
-### Phase 10: Polish — TODO
-- [ ] README, Postman collection
+### Phase 10: Polish — DONE
+- [x] README.md with architecture diagram, getting started, API docs, project structure
+- [x] Postman collection (EShop.Postman.json) with auto-token saving and all endpoints
+- [x] All 10 phases complete
 
 ## Key Configuration
 - JWT Secret: configured in appsettings.json per service
