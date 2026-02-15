@@ -121,8 +121,18 @@ Shared → all Domain projects
 - [x] Fixed Ordering appsettings Catalog URL: 5002 → 5056
 - [x] All 74 tests still passing
 
-### Phase 9: Docker Full Stack & Release — TODO
-- [ ] Dockerfiles, E2E testing, release/hotfix git practice
+### Phase 9: Docker Full Stack & Release — DONE
+- [x] .dockerignore (exclude bin/obj/vs/git)
+- [x] Multi-stage Dockerfiles for Identity, Ordering, Catalog, API Gateway (sdk:8.0 build → aspnet:8.0 runtime)
+- [x] appsettings.Docker.json for all 4 services (Docker service names instead of localhost)
+- [x] docker-compose.yml: 4 service definitions + eshop-network bridge + SQL Server healthcheck
+- [x] Auto-migration on startup (EnsureCreated for Identity, Migrate for Ordering) with retry logic
+- [x] Swagger enabled in Docker environment for all services
+- [x] SEQ_FIRSTRUN_NOAUTHENTICATION for Seq latest
+- [x] E2E tested: register → login → create order → get order → cancel order (all via Gateway :5000)
+- [x] All 74 tests still passing
+- [x] Release v1.0: release/v1.0 → main (tag v1.0) → develop
+- [x] Hotfix v1.0.1: hotfix branch → main (tag v1.0.1) → develop
 
 ### Phase 10: Polish — TODO
 - [ ] README, Postman collection
