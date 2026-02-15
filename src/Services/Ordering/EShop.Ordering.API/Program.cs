@@ -132,10 +132,31 @@ builder.Services.AddHealthChecks()
 
 var app = builder.Build();
 
+// Auto-migrate database
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
+    var retries = 10;
+    for (var i = 0; i < retries; i++)
+    {
+        try
+        {
+            db.Database.Migrate();
+            break;
+        }
+        catch (Exception ex)
+        {
+            if (i == retries - 1) throw;
+            Console.WriteLine($"Database not ready (attempt {i + 1}/{retries}): {ex.Message}");
+            Thread.Sleep(3000);
+        }
+    }
+}
+
 // Middleware
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();

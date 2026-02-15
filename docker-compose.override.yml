@@ -14,6 +14,22 @@ services:
     volumes:
       - seq-data:/data
 
+  identity-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+
+  ordering-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+
+  catalog-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+
+  api-gateway:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+
 volumes:
   rabbitmq-data:
   seq-data:
