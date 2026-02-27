@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet *)",
+      "Bash(docker compose *)",
+      "Bash(git status*)",
+      "Bash(git checkout*)",
+      "Bash(git branch*)",
+      "Bash(git pull*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(mkdir *)"
+    ],
+    "deny": [
+      "Edit(file_path=**/.env*)",
+      "Edit(file_path=**/appsettings.Production.json)",
+      "Write(file_path=**/.env*)",
+      "Write(file_path=**/appsettings.Production.json)"
+    ]
+  }
+}

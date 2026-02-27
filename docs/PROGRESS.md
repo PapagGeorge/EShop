@@ -1,0 +1,95 @@
+# EShop — Implementation Progress Archive
+
+> Detailed phase-by-phase implementation history. Current status: **v1.0.1 released**, all 10 phases complete, 74 tests passing.
+
+## Phase 1: Foundation — DONE
+- [x] Git repo setup (main + develop)
+- [x] Solution structure (14 projects, references)
+- [x] Docker Compose (SQL Server :1433, RabbitMQ :5672/15672, Seq :5341/8081)
+- [x] EShop.Shared (BaseEntity, IDomainEvent, NotFoundException, BusinessRuleException)
+
+## Phase 2: Identity Service — DONE
+- [x] Domain: User entity (factory method, private setters)
+- [x] Application: RegisterCommand/Handler/Validator, LoginCommand/Handler/Validator
+- [x] Application: ValidationBehavior (MediatR pipeline), DTOs, Interfaces
+- [x] Infrastructure: IdentityDbContext, UserConfiguration (Fluent API), UserRepository
+- [x] Infrastructure: BcryptPasswordHasher, JwtTokenService
+- [x] API: AuthController (POST register, POST login)
+- [x] API: ExceptionHandlingMiddleware (RFC 7807), Serilog+Seq, Swagger+JWT, health checks
+- [x] Tests: 22 unit tests (handlers, validators, services) — ALL PASSING
+- [x] Merged to develop, pushed
+
+## Phase 3: Ordering Domain — DONE
+- [x] Order (Aggregate Root), OrderItem (Entity), Address (Value Object), OrderStatus (Enum)
+- [x] Domain Events: OrderCreatedDomainEvent, OrderCancelledDomainEvent
+- [x] Domain Exceptions: OrderDomainException, InvalidOrderStatusTransitionException
+- [x] Unit Tests: 26 tests (creation, invariants, state transitions, value equality) — ALL PASSING
+- [x] Merged to develop
+
+## Phase 4: Ordering Application — DONE
+- [x] DTOs: AddressDto, OrderItemDto, OrderDto, OrderSummaryDto, PaginatedResult<T>
+- [x] Interfaces: IOrderRepository, ICatalogService (+ ProductDto), IEventBus
+- [x] Behaviors: ValidationBehavior, LoggingBehavior (MediatR pipeline)
+- [x] Commands: CreateOrder (command+handler+validator), CancelOrder (command+handler)
+- [x] Queries: GetOrderById (query+handler), GetUserOrders (query+handler+validator)
+- [x] Tests: 26 application tests (handlers, validators) — ALL PASSING (52 total)
+
+## Phase 5: Ordering Infrastructure — DONE
+- [x] OrderingDbContext with Orders + OrderItems DbSets
+- [x] OrderConfiguration (owned Address, string status, backing field for Items)
+- [x] OrderItemConfiguration (decimal precision, ignored computed TotalPrice)
+- [x] OrderRepository (CRUD + paginated user orders with status filter)
+- [x] CatalogServiceClient (HttpClient + Polly retry/circuit breaker at DI level)
+- [x] EventBus (MassTransit IPublishEndpoint wrapper)
+- [x] API minimal setup (DbContext, DI registrations, connection strings)
+- [x] EF Migration: InitialOrderingMigration (Orders + OrderItems tables)
+- [x] NuGet: EF Core SqlServer, MassTransit.RabbitMQ, Http.Polly
+- [x] All 52 ordering + 22 identity tests passing (74 total)
+
+## Phase 6: Ordering API — DONE
+- [x] NuGet: JwtBearer, HealthChecks.EF, Serilog.AspNetCore, Serilog.Sinks.Seq, Swashbuckle 6.9.0
+- [x] ExceptionHandlingMiddleware (409 InvalidStatusTransition, 400 Validation, 422 BusinessRule, 404 NotFound, 500 fallback)
+- [x] OrdersController (POST create, GET by id, PATCH cancel, GET user orders) with [Authorize]
+- [x] Program.cs: Serilog, Controllers, Swagger+JWT, Auth, MediatR, FluentValidation, Behaviors, HealthChecks
+- [x] appsettings.json: Jwt section (shared token validation), Serilog config (Console + Seq)
+- [x] All 74 tests passing (52 ordering + 22 identity)
+
+## Phase 7: Catalog Service (Minimal) — DONE
+- [x] NuGet: Serilog.AspNetCore 8.0.3, Serilog.Sinks.Seq 8.0.0, Swashbuckle 6.9.0
+- [x] Product model (Id, Name, Price, Category)
+- [x] ProductsController: GET all, GET by id, POST batch (no auth — internal service)
+- [x] 5 hardcoded products (Wireless Mouse, USB-C Cable, Mechanical Keyboard, HDMI Cable, Webcam)
+- [x] Program.cs: Serilog, Controllers, Swagger, Health checks
+- [x] appsettings.json: Serilog config (Console + Seq)
+- [x] Batch endpoint matches CatalogServiceClient contract (List<Guid> → List<Product>)
+- [x] All 74 tests still passing
+
+## Phase 8: API Gateway (YARP) — DONE
+- [x] NuGet: Yarp.ReverseProxy 2.2.0, JwtBearer, Serilog.AspNetCore, Serilog.Sinks.Seq, Swashbuckle 6.9.0
+- [x] YARP routes: /api/auth → Identity(:5213), /api/orders → Ordering(:5281), /api/products → Catalog(:5056)
+- [x] JWT Authentication (validates tokens, same config as services)
+- [x] Rate Limiting: fixed window (100 req/min), returns 429
+- [x] CORS: AllowAll policy for development
+- [x] Health checks: /health endpoint
+- [x] Serilog + Seq logging
+- [x] Gateway port: 5000 (per architecture docs)
+- [x] Fixed Ordering appsettings Catalog URL: 5002 → 5056
+- [x] All 74 tests still passing
+
+## Phase 9: Docker Full Stack & Release — DONE
+- [x] .dockerignore (exclude bin/obj/vs/git)
+- [x] Multi-stage Dockerfiles for Identity, Ordering, Catalog, API Gateway (sdk:8.0 build → aspnet:8.0 runtime)
+- [x] appsettings.Docker.json for all 4 services (Docker service names instead of localhost)
+- [x] docker-compose.yml: 4 service definitions + eshop-network bridge + SQL Server healthcheck
+- [x] Auto-migration on startup (EnsureCreated for Identity, Migrate for Ordering) with retry logic
+- [x] Swagger enabled in Docker environment for all services
+- [x] SEQ_FIRSTRUN_NOAUTHENTICATION for Seq latest
+- [x] E2E tested: register → login → create order → get order → cancel order (all via Gateway :5000)
+- [x] All 74 tests still passing
+- [x] Release v1.0: release/v1.0 → main (tag v1.0) → develop
+- [x] Hotfix v1.0.1: hotfix branch → main (tag v1.0.1) → develop
+
+## Phase 10: Polish — DONE
+- [x] README.md with architecture diagram, getting started, API docs, project structure
+- [x] Postman collection (EShop.Postman.json) with auto-token saving and all endpoints
+- [x] All 10 phases complete
