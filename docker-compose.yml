@@ -28,6 +28,12 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     networks:
       - eshop-network
 
@@ -73,7 +79,7 @@ services:
       sqlserver:
         condition: service_healthy
       rabbitmq:
-        condition: service_started
+        condition: service_healthy
       seq:
         condition: service_started
       catalog-api:

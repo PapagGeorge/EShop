@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: seq-pvc
+  namespace: eshop
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seq
+  namespace: eshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seq
+  template:
+    metadata:
+      labels:
+        app: seq
+    spec:
+      containers:
+      - name: seq
+        image: datalust/seq:latest
+        ports:
+        - containerPort: 80    # Seq UI
+        - containerPort: 5341  # Serilog ingest
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SEQ_FIRSTRUN_NOAUTHENTICATION
+          value: "true"
+        volumeMounts:
+        - name: seq-data
+          mountPath: /data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: seq-data
+        persistentVolumeClaim:
+          claimName: seq-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: seq
+  namespace: eshop
+spec:
+  selector:
+    app: seq
+  ports:
+  - name: ingest
+    port: 5341
+    targetPort: 5341
+  - name: ui
+    port: 80
+    targetPort: 80
