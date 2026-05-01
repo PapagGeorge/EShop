@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: api-gateway
-        image: geopapag/eshop-api-gateway:sha-5ef0ee2
+        image: geopapag/eshop-api-gateway:sha-727c917
         ports:
         - containerPort: 8080
         env:
