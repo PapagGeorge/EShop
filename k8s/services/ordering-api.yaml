@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: ordering-api
-        image: geopapag/eshop-ordering-api:1.0.0
+        image: geopapag/eshop-ordering-api:sha-5ef0ee2
         ports:
         - containerPort: 8080
         env:

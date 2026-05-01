@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: identity-api
-        image: geopapag/eshop-identity-api:1.0.0
+        image: geopapag/eshop-identity-api:sha-5ef0ee2
         ports:
         - containerPort: 8080
         env:
