@@ -9,12 +9,10 @@ on:
 
 env:
   DOCKER_HUB_USERNAME: geopapag
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 permissions:
   contents: write
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build-and-push:
