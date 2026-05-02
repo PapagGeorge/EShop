@@ -469,7 +469,8 @@ kubectl apply -f k8s/infrastructure/
 kubectl apply -f k8s/services/
 
 # ─── ALTERNATIVELY: deploy everything at once ─────────────────────────
-kubectl apply -f k8s/
+# -R = recursive, required because k8s/ has subdirectories (infrastructure/, services/)
+kubectl apply -R -f k8s/
 ```
 
 ### Verify the Deployment
@@ -531,10 +532,20 @@ built and published automatically.
 ```
 Developer push → CI: Build + Test → (if passed) → CD: Build Image → Push to Docker Hub
                   ↑                                                          ↓
-               develop branch                                    Update K8s Manifests
+               develop branch                               Update k8s/*.yaml (new image tag)
                                                                              ↓
-                                                              kubectl apply -f k8s/  (manual)
+                                                              git commit + push [skip ci]
+                                                                             ↓
+                                                            git pull origin main  (manual)
+                                                                             ↓
+                                                         kubectl apply -R -f k8s/  (manual)
 ```
+
+> **Why `git pull` before `kubectl apply`?**
+> The CD pipeline automatically edits the `k8s/services/*.yaml` files (replacing the
+> image tag) and commits that change back to the `main` branch. If you run
+> `kubectl apply` without pulling first, your local YAML files still have the
+> **old** image tag and Kubernetes will not pick up the new image.
 
 ### File Structure
 
@@ -719,11 +730,22 @@ kubectl port-forward svc/seq 8081:80 -n eshop
 
 ```
 1. git push origin develop     → CI runs automatically (build + 74 tests)
+
 2. Merge to main               → CD runs automatically:
-                                   - Builds 4 Docker images
-                                   - Pushes to Docker Hub with a new tag
-                                   - Updates k8s/*.yaml with the new tag
-3. kubectl apply -f k8s/       → Apply the updated manifests to the cluster
+                                   - Builds 5 Docker images (4 services + web)
+                                   - Pushes to Docker Hub with a new sha tag
+                                   - Edits k8s/services/*.yaml with the new tag
+                                   - Commits and pushes back to main [skip ci]
+
+3. git pull origin main        → Sync the updated k8s/*.yaml files locally
+                                   (the CD pipeline committed them — without this
+                                    step your local files still have the old tag)
+
+4. kubectl apply -R -f k8s/    → Apply the updated manifests to the cluster
+                                   (-R = recursive, required for subdirectories)
+
+5. kubectl rollout status deployment/<name> -n eshop
+                               → Confirm the new pod is Running
 ```
 
 ---
