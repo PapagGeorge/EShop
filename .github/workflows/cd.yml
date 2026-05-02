@@ -24,18 +24,23 @@ jobs:
         service:
           - name: identity-api
             dockerfile: src/Services/Identity/EShop.Identity.API/Dockerfile
+            context: .
             build_args: ""
           - name: ordering-api
             dockerfile: src/Services/Ordering/EShop.Ordering.API/Dockerfile
+            context: .
             build_args: ""
           - name: catalog-api
             dockerfile: src/Services/Catalog/EShop.Catalog.API/Dockerfile
+            context: .
             build_args: ""
           - name: api-gateway
             dockerfile: src/ApiGateway/EShop.ApiGateway/Dockerfile
+            context: .
             build_args: ""
           - name: web
             dockerfile: src/Web/EShop.Web/Dockerfile
+            context: src/Web/EShop.Web
             build_args: "VITE_API_BASE_URL=http://localhost:5000"
 
     steps:
@@ -65,7 +70,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ${{ matrix.service.context }}
           file: ${{ matrix.service.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
