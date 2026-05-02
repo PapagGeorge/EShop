@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: web
-        image: geopapag/eshop-web:1.0.0
+        image: geopapag/eshop-web:sha-5699cdf
         ports:
         - containerPort: 80
         resources:
