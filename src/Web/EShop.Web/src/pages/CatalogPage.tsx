@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getProducts } from '../api/catalogApi';
 import { useCartStore } from '../store/cartStore';
@@ -10,6 +11,13 @@ export default function CatalogPage() {
   });
 
   const addItem = useCartStore(s => s.addItem);
+  const [added, setAdded] = useState<string | null>(null);
+
+  const handleAdd = (product: Product) => {
+    addItem(product);
+    setAdded(product.id);
+    setTimeout(() => setAdded(null), 1200);
+  };
 
   if (isLoading) {
     return <div className="text-center py-16 text-gray-500">Loading products...</div>;
@@ -34,10 +42,14 @@ export default function CatalogPage() {
                 €{product.price.toFixed(2)}
               </span>
               <button
-                onClick={() => addItem(product)}
-                className="bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-indigo-700 transition-colors"
+                onClick={() => handleAdd(product)}
+                className={`px-4 py-1.5 rounded-lg text-sm transition-colors text-white ${
+                  added === product.id
+                    ? 'bg-green-500'
+                    : 'bg-indigo-600 hover:bg-indigo-700'
+                }`}
               >
-                Add to Cart
+                {added === product.id ? '✓ Added' : 'Add to Cart'}
               </button>
             </div>
           </div>
