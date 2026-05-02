@@ -24,12 +24,19 @@ jobs:
         service:
           - name: identity-api
             dockerfile: src/Services/Identity/EShop.Identity.API/Dockerfile
+            build_args: ""
           - name: ordering-api
             dockerfile: src/Services/Ordering/EShop.Ordering.API/Dockerfile
+            build_args: ""
           - name: catalog-api
             dockerfile: src/Services/Catalog/EShop.Catalog.API/Dockerfile
+            build_args: ""
           - name: api-gateway
             dockerfile: src/ApiGateway/EShop.ApiGateway/Dockerfile
+            build_args: ""
+          - name: web
+            dockerfile: src/Web/EShop.Web/Dockerfile
+            build_args: "VITE_API_BASE_URL=http://localhost:5000"
 
     steps:
       - name: Checkout
@@ -63,6 +70,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: ${{ matrix.service.build_args }}
           cache-from: type=gha,scope=${{ matrix.service.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.service.name }}
 
@@ -91,7 +99,7 @@ jobs:
       - name: Update image tags in K8s manifests
         run: |
           TAG="${{ steps.tag.outputs.tag }}"
-          for SERVICE in identity-api ordering-api catalog-api api-gateway; do
+          for SERVICE in identity-api ordering-api catalog-api api-gateway web; do
             FILE="k8s/services/${SERVICE}.yaml"
             sed -i "s|image: geopapag/eshop-${SERVICE}:.*|image: geopapag/eshop-${SERVICE}:${TAG}|g" "$FILE"
             echo "Updated ${FILE} → :${TAG}"

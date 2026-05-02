@@ -118,6 +118,20 @@ services:
     networks:
       - eshop-network
 
+  web:
+    build:
+      context: src/Web/EShop.Web
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:5000
+    container_name: eshop-web
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - eshop-network
+
 volumes:
   sqlserver-data:
 
