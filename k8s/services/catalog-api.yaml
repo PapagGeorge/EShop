@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: catalog-api
-        image: geopapag/eshop-catalog-api:sha-5699cdf
+        image: geopapag/eshop-catalog-api:sha-4e4f30a
         ports:
         - containerPort: 8080
         env:
