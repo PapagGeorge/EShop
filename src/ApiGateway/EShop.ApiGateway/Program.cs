@@ -1,9 +1,6 @@
 using System.Security.Claims;
-using System.Text;
 using System.Threading.RateLimiting;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,32 +12,6 @@ builder.Host.UseSerilog((context, configuration) =>
 // YARP Reverse Proxy
 builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
-
-// JWT Authentication
-var jwtSection = builder.Configuration.GetSection("Jwt");
-var secret = jwtSection["Secret"]!;
-var key = Encoding.UTF8.GetBytes(secret);
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSection["Issuer"],
-        ValidAudience = jwtSection["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(key)
-    };
-});
-
-builder.Services.AddAuthorization();
 
 // Rate Limiting
 builder.Services.AddRateLimiter(options =>
@@ -118,10 +89,6 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
 }
 
 app.UseCors("AllowAll");
-
-// Authentication πριν rate limiter ώστε τα user claims να είναι διαθέσιμα στις policies
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.UseRateLimiter();
 
